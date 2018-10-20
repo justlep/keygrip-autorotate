@@ -1,4 +1,4 @@
-# keygrip-autorotate
+# keygrip-autorotate [![Build Status](https://travis-ci.org/justlep/keygrip-autorotate.svg?branch=master)](https://travis-ci.org/justlep/keygrip-autorotate)
 Key signing and verification with periodically auto-rotating secrets.
 
 Basically a wrapper around [Keygrip](https://github.com/crypto-utils/keygrip), 
@@ -100,7 +100,7 @@ This uses `index` to return `true` if the digest matches any existing keys, and 
 Stops the internal secret-rotation timer (if running), so it won't block quick application shutdown.
 After being called, all other method will throw an Error when called.
 
-###Credits
+### Credits
 
 * [Keygrip](https://github.com/crypto-utils/keygrip/blob/master/README.md)
 
