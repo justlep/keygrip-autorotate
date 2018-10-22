@@ -1,4 +1,8 @@
-# keygrip-autorotate [![Build Status](https://travis-ci.org/justlep/keygrip-autorotate.svg?branch=master)](https://travis-ci.org/justlep/keygrip-autorotate) [![Node.js Version][node-version-image]][node-version-url]
+# keygrip-autorotate 
+[![Build Status](https://travis-ci.org/justlep/keygrip-autorotate.svg?branch=master)](https://travis-ci.org/justlep/keygrip-autorotate) 
+[![NPM Version][npm-image]][npm-url]
+[![Node.js Version][node-version-image]][node-version-url]
+
 Key signing and verification with periodically auto-rotating secrets.
 
 Basically a wrapper around [Keygrip](https://github.com/crypto-utils/keygrip), 
@@ -108,5 +112,7 @@ After being called, all other method will throw an Error when called.
 [MIT](LICENSE)
 
 
+[npm-image]: https://img.shields.io/npm/v/keygrip-autorotate.svg
+[npm-url]: https://npmjs.org/package/keygrip-autorotate
 [node-version-image]: https://img.shields.io/node/v/keygrip-autorotate.svg
 [node-version-url]: https://nodejs.org/en/download/
