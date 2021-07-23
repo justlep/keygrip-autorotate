@@ -1,4 +1,4 @@
-# keygrip-autorotate [![Build Status](https://travis-ci.org/justlep/keygrip-autorotate.svg?branch=master)](https://travis-ci.org/justlep/keygrip-autorotate)  [![NPM Version][npm-image]][npm-url] [![Node.js Version][node-version-image]][node-version-url]
+# keygrip-autorotate [![Build Status](https://api.travis-ci.com/justlep/keygrip-autorotate.svg?branch=master)](https://travis-ci.com/justlep/keygrip-autorotate)  [![NPM Version][npm-image]][npm-url] [![Node.js Version][node-version-image]][node-version-url]
 
 Key signing and verification with periodically auto-rotating secrets.
 
