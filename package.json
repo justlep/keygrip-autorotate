@@ -1,8 +1,9 @@
 {
   "name": "keygrip-autorotate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Key signing and verification with periodically auto-rotating secrets",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "mocha --reporter spec test/"
   },
@@ -11,7 +12,7 @@
     "url": "git+https://github.com/justlep/keygrip-autorotate.git"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 14"
   },
   "author": "Lennart Pegel",
   "license": "MIT",
@@ -20,9 +21,9 @@
   },
   "homepage": "https://github.com/justlep/keygrip-autorotate#readme",
   "dependencies": {
-    "keygrip": "^1.0.3"
+    "keygrip": "1.0.3"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^10.0.0"
   }
 }

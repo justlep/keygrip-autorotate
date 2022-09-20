@@ -1,14 +1,12 @@
 /*!
  * keygrip-autorotate
- * Copyright(c) 2018 Lennart Pegel
+ * Copyright(c) 2018-2022 Lennart Pegel
  * MIT Licensed
  */
 
-'use strict';
-
-const assert = require('assert');
-const crypto = require('crypto');
-const Keygrip = require('keygrip');
+import assert from 'node:assert';
+import crypto from 'node:crypto';
+import Keygrip from 'keygrip';
 
 const DESTROYED_ERROR_MSG = 'KeygripAutorotate instance is already destroyed';
 
@@ -29,7 +27,7 @@ const DESTROYED_ERROR_MSG = 'KeygripAutorotate instance is already destroyed';
  *
  * @constructor
  */
-function KeygripAutorotate(opts) {
+export function KeygripAutorotate(opts) {
     if (!this instanceof KeygripAutorotate) {
         throw new Error('KeygripAutorotate is a constructor');
     }
@@ -52,8 +50,8 @@ function KeygripAutorotate(opts) {
     let isDestroyed = false;
 
     /**
-     * @type {Object} - the interval Timeout object while {@link periodicSecretRotate} gets called periodically.
-     *                  A falsy value of `rotationTimer` means
+     * @type {?number} - the interval timer id while {@link periodicSecretRotate} gets called periodically.
+     *                   A falsy value of `rotationTimer` means
      *                    - secrets rotation is currently paused, and
      *                    - none of the current secrets has been used for signing anything yet
      */
@@ -63,7 +61,8 @@ function KeygripAutorotate(opts) {
 
     const periodicSecretRotate = function() {
         if (!rotationsTillPause) {
-            rotationTimer = void(clearInterval(rotationTimer));
+            clearInterval(rotationTimer);
+            rotationTimer = null;
             return;
         }
 
@@ -128,7 +127,8 @@ function KeygripAutorotate(opts) {
     this.destroy = function() {
         isDestroyed = true;
         if (rotationTimer) {
-            rotationTimer = void(clearInterval(rotationTimer));
+            clearInterval(rotationTimer)
+            rotationTimer = null;
         }
     };
 }
@@ -141,5 +141,5 @@ function _defaultCreateSecret() {
     return crypto.randomBytes(32).toString('hex');
 }
 
-
-module.exports = KeygripAutorotate;
+// backwards compatibility w/ 1.0.0
+export default KeygripAutorotate;

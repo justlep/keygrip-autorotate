@@ -14,9 +14,9 @@ $ npm i --save keygrip-autorotate
 
 ## Usage
 ```javascript
-const KeygripAutorotate = require('keygrip-autorotate');
+import {KeygripAutorotate} from 'keygrip-autorotate';
 
-let grip = new KeygripAutorotate({
+const grip = new KeygripAutorotate({
     totalSecrets: 6, 
     ttlPerSecret: 6*60*1000, // 6 minutes 
     createSecret: () => crypto.randomBytes(32).toString('hex'), // default
@@ -108,6 +108,14 @@ After being called, all other method will throw an Error when called.
 ### License
 [MIT](LICENSE)
 
+### Changelog
+
+##### 1.1.0 (breaking changes)
+- `KeygripAutorotate` is now ES module, requires Node 14+
+- added named export
+
+##### 1.0.0 
+- initial version
 
 [npm-image]: https://img.shields.io/npm/v/keygrip-autorotate.svg
 [npm-url]: https://npmjs.org/package/keygrip-autorotate

@@ -1,11 +1,9 @@
-'use strict';
-
-const assert = require('assert');
-const crypto = require('crypto');
-const KeygripAutorotate = require('..');
+import assert from 'node:assert';
+import crypto from 'node:crypto';
+import {KeygripAutorotate} from '../index.js';
 
 
-describe('KeygripAutotate', function () {
+describe('KeygripAutorotate', function () {
 
     const HEX_REGEX = /^[0-9a-f]+$/;
     const BASE64_REGEX = /^[0-9a-z_-]+$/i;
