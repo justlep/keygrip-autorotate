@@ -1,4 +1,4 @@
-# keygrip-autorotate [![Build Status](https://api.travis-ci.com/justlep/keygrip-autorotate.svg?branch=master)](https://app.travis-ci.com/github/justlep/keygrip-autorotate)  [![NPM Version][npm-image]][npm-url] [![Node.js Version][node-version-image]][node-version-url]
+# keygrip-autorotate [![NPM Version][npm-image]][npm-url] [![Node.js Version][node-version-image]][node-version-url]
 
 Key signing and verification with periodically auto-rotating secrets.
 
@@ -109,6 +109,10 @@ After being called, all other method will throw an Error when called.
 [MIT](LICENSE)
 
 ### Changelog
+
+##### 1.1.1
+- bumped dependencies
+- removed Travis refs
 
 ##### 1.1.0 (breaking changes)
 - `KeygripAutorotate` is now ES module, requires Node 14+

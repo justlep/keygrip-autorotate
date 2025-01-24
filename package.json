@@ -1,6 +1,6 @@
 {
   "name": "keygrip-autorotate",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Key signing and verification with periodically auto-rotating secrets",
   "main": "index.js",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/justlep/keygrip-autorotate#readme",
   "dependencies": {
-    "keygrip": "1.0.3"
+    "keygrip": "1.1.0"
   },
   "devDependencies": {
     "mocha": "^10.0.0"

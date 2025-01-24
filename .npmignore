@@ -1,5 +1,4 @@
 test/
-package-lock.json
 .idea
 *.tgz
 .travis.yml

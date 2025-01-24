@@ -1,9 +1,3 @@
-/*!
- * keygrip-autorotate
- * Copyright(c) 2018-2022 Lennart Pegel
- * MIT Licensed
- */
-
 import assert from 'node:assert';
 import crypto from 'node:crypto';
 import Keygrip from 'keygrip';
