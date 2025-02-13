@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import crypto from 'node:crypto';
+import {randomBytes} from 'node:crypto';
 import Keygrip from 'keygrip';
 
 const DESTROYED_ERROR_MSG = 'KeygripAutorotate instance is already destroyed';
@@ -14,10 +14,10 @@ const DESTROYED_ERROR_MSG = 'KeygripAutorotate instance is already destroyed';
  * @param {object} opts
  * @param {number} opts.totalSecrets - the number of secrets to use for signing and verification
  * @param {number} opts.ttlPerSecret - the maximum time to live per secret in millis, from its creation till being rotated out
- * @param {function} [opts.createSecret] - a function returning a new secret.
- *                                       If omitted, secrets are auto-generated as 32 random byte hex strings
+ * @param {function():(string|Buffer)} [opts.createSecret] - function returning a new secret.
+ *                                                           If omitted, secrets are auto-generated as 64 to 128 random bytes
  * @param {string} [opts.hmacAlgorithm] - defaults to 'sha256' (alternative 'sha1')
- * @param {string} [opts.encoding] - defaults to 'base64' (alternative 'hex', ...)
+ * @param {string} [opts.encoding] - defaults to 'base64' (alternative 'hex', ... 'base64urlsafe')
  *
  * @constructor
  */
@@ -28,9 +28,9 @@ export function KeygripAutorotate(opts) {
 
     assert(opts && typeof opts === 'object', 'invalid options');
 
-    const {totalSecrets, ttlPerSecret, hmacAlgorithm = 'sha256', createSecret = _defaultCreateSecret, encoding = 'base64'} = opts;
+    const {totalSecrets, ttlPerSecret, hmacAlgorithm = 'sha256', createSecret = generateRandomBytes, encoding = 'base64url'} = opts;
 
-    assert(!isNaN(totalSecrets) && totalSecrets >= 2,'totalSecrets should be > 2');
+    assert(!isNaN(totalSecrets) && totalSecrets >= 2, 'totalSecrets should be > 2');
     assert(!isNaN(ttlPerSecret) && ttlPerSecret >= 1000, 'ttlPerSecret should be greater than 1000 (millis)');
     assert(hmacAlgorithm && typeof hmacAlgorithm === 'string', 'hmacAlgorithm must be a valid hmac algorithm or omitted');
     assert(encoding && typeof encoding === 'string', 'Invalid encoding');
@@ -62,7 +62,6 @@ export function KeygripAutorotate(opts) {
 
         secrets.pop();
         secrets.unshift(createSecret());
-
         --rotationsTillPause;
     };
 
@@ -128,12 +127,8 @@ export function KeygripAutorotate(opts) {
 }
 
 /**
- * @return {string}
- * @private
+ * @param {number} [minLen=64]
+ * @param {number} [maxLen=128]
+ * @return {Buffer}
  */
-function _defaultCreateSecret() {
-    return crypto.randomBytes(32).toString('hex');
-}
-
-// backwards compatibility w/ 1.0.0
-export default KeygripAutorotate;
+export const generateRandomBytes = (minLen = 64, maxLen = 128) => randomBytes(minLen + Math.round(Math.random() * (maxLen - minLen)));

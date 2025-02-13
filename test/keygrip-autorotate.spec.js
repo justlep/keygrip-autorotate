@@ -1,12 +1,12 @@
 import assert from 'node:assert';
 import crypto from 'node:crypto';
-import {KeygripAutorotate} from '../index.js';
+import {generateRandomBytes, KeygripAutorotate} from '../index.js';
 
 
 describe('KeygripAutorotate', function () {
 
     const HEX_REGEX = /^[0-9a-f]+$/;
-    const BASE64_REGEX = /^[0-9a-z_-]+$/i;
+    const BASE64_URL_SAFE_REGEX = /^[0-9a-z_-]+$/i; // underlying keygrip is returning url-safe base64 regardless of encoding "base64" or "base64url"
 
     let grips = [];
 
@@ -47,7 +47,7 @@ describe('KeygripAutorotate', function () {
         const text = 'some text';
 
         let sig = grip.sign(text);
-        assert(sig && BASE64_REGEX.test(sig), 'signature should be base64 string');
+        assert(sig && BASE64_URL_SAFE_REGEX.test(sig), 'signature should be base64 string');
         assert(grip.verify(text, sig), 'the signature calculated just now should be verifiable');
         assert.equal(grip.sign(text), sig, 'the same text should produce the same signature within the current secrets rotation frame');
         assert.equal(grip.sign(text), sig, 'the same text should produce the same signature within the current secrets rotation frame');
@@ -70,13 +70,13 @@ describe('KeygripAutorotate', function () {
         assert(HEX_REGEX.test(sigs[0]));
         // sha256 base64
         assert.equal(sigs[1].length, 43);
-        assert(BASE64_REGEX.test(sigs[1]));
+        assert(BASE64_URL_SAFE_REGEX.test(sigs[1]));
         // sha1 hex
         assert.equal(sigs[2].length, 40);
         assert(HEX_REGEX.test(sigs[2]));
         // sha256 hex
         assert.equal(sigs[3].length, 27);
-        assert(BASE64_REGEX.test(sigs[3]));
+        assert(BASE64_URL_SAFE_REGEX.test(sigs[3]));
     });
 
     it('should rotate keys periodically, rendering old signatures non-verifiable', (done) => {
@@ -158,7 +158,7 @@ describe('KeygripAutorotate', function () {
             assert.notEqual(grip.sign('baz'), sig.baz, 'new sig for baz used fresher secret than in phase 2, so sigs should differ');
 
             sig.tadaa = grip.sign('tadaa');
-            assert(BASE64_REGEX.test(sig.tadaa), 'a new secret should have been inserted to sign');
+            assert(BASE64_URL_SAFE_REGEX.test(sig.tadaa), 'a new secret should have been inserted to sign');
 
             assert.equal(grip.index('foo', sig.foo), -1, 'the secret used for sig.foo is gone long ago');
             assert.equal(grip.index('bar', sig.bar), -1, 'the secret used for sig.bar got kicked after phase 2');
@@ -166,7 +166,7 @@ describe('KeygripAutorotate', function () {
             assert.equal(grip.index('tadaa', sig.tadaa), 0, 'the secret used for sig.tadaa now freshest');
 
             // retrospective format check for all signatures generated so far..
-            Object.keys(sig).forEach(key => assert(BASE64_REGEX.test(sig[key]), 'format of all signs should be base64, but isnt for sig.' + key));
+            Object.keys(sig).forEach(key => assert(BASE64_URL_SAFE_REGEX.test(sig[key]), 'format of all signs should be base64, but isnt for sig.' + key));
 
             done();
         }, 1250);
@@ -174,11 +174,11 @@ describe('KeygripAutorotate', function () {
     });
 
     it('can use an external function to generate new secrets to be rotated in', (done) => {
-        const FIX_SECRET = crypto.randomBytes(10).toString('hex');
+        const FIX_SECRET = crypto.randomBytes(10);
         const HELLO = 'hello world';
 
         let fixSecretCreator = () => FIX_SECRET,
-            randomSecretCreator = () => crypto.randomBytes(10).toString('hex'),
+            randomSecretCreator = () => crypto.randomBytes(10),
             fixGrip = new KeygripAutorotate({totalSecrets: 4, ttlPerSecret: 1000, createSecret: fixSecretCreator}),
             randGrip = new KeygripAutorotate({totalSecrets: 4, ttlPerSecret: 1000, createSecret: randomSecretCreator}),
             sig = {};
@@ -193,7 +193,7 @@ describe('KeygripAutorotate', function () {
         setTimeout(() => {
             assert(fixGrip.verify(HELLO, sig.fix));
             assert(randGrip.verify(HELLO, sig.rand));
-            
+
             assert.equal(fixGrip.sign(HELLO), sig.fix, 'newly in-rotated secret is constant, signature remains the same');
             assert.notEqual(randGrip.sign(HELLO), sig.rand, 'in-rotated key is random, so signature must differ');
 
@@ -202,6 +202,26 @@ describe('KeygripAutorotate', function () {
 
 
         grips = [randGrip, fixGrip];
+    });
+
+    it('exports generateRandomBytes() generating variable length random byte buffers, by default 64 to 128 bytes', () => {
+        let devs = 0,
+            sizes = [],
+            TOTAL = 5_000;
+
+        for (let i = 0, key; i < TOTAL; i++) {
+            key = generateRandomBytes();
+            assert(key.length >= 64 && key.length <= 128);
+            devs += (96 - key.length) * (96 - key.length);
+            sizes.push(key.length);
+        }
+        sizes.sort((a,b) => a - b);
+        assert.equal(sizes[0], 64);
+        assert.equal(sizes[TOTAL - 1], 128);
+        let median = sizes[TOTAL / 2];
+        assert(median >= 94 && median < 98, `Expected median to be close to 96, but is ${median}`);
+        let sDev = Math.sqrt(devs / (TOTAL - 1));
+        assert(sDev > 18 && sDev <= 19);
     });
 
 });

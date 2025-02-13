@@ -1,6 +1,6 @@
 {
   "name": "keygrip-autorotate",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Key signing and verification with periodically auto-rotating secrets",
   "main": "index.js",
   "type": "module",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/justlep/keygrip-autorotate.git"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   },
   "author": "Lennart Pegel",
   "license": "MIT",

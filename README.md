@@ -110,6 +110,13 @@ After being called, all other method will throw an Error when called.
 
 ### Changelog
 
+##### 1.2.0
+- default key generator now creates variable length keys (64 to 128 bytes, was 32 bytes fix)
+- default encoding is now "base64url" (was "base64")
+  (though underlying keygrip is returning url-safe base64 regardless of encoding "base64" or "base64url")
+- Breaking: removed default export
+- Breaking: requires Node 16+
+
 ##### 1.1.1
 - bumped dependencies
 - removed Travis refs
